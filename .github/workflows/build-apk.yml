@@ -1,0 +1,67 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Patch react-native-gradle-plugin
+        run: |
+          python3 - <<'PY'
+          import os
+
+          p = "node_modules/react-native-gradle-plugin/build.gradle.kts"
+          if os.path.exists(p):
+              s = open(p).read()
+              if "skip-metadata-version-check" not in s:
+                  s += "\ntasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach { kotlinOptions.freeCompilerArgs = freeCompilerArgs + \"-Xskip-metadata-version-check\" }\n"
+                  open(p, "w").write(s)
+                  print("patched")
+          PY
+
+      - name: Generate debug keystore
+        run: |
+          if [ ! -f android/app/debug.keystore ]; then
+            keytool -genkeypair -v -storetype PKCS12 -keystore android/app/debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+          fi
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: 7.6.3
+
+      - name: Build Release APK
+        working-directory: android
+        run: gradle assembleRelease --no-daemon
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: LifeManagerApp-apk
+          path: android/app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
