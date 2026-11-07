@@ -62,7 +62,17 @@ jobs:
 
       - name: Build Release APK
         working-directory: android
-        run: gradle assembleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a
+        run: |
+          set +e
+          gradle assembleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a 2>&1 | tee build.log
+          exit ${PIPESTATUS[0]}
+
+      - name: Upload build log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: android/build.log
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
