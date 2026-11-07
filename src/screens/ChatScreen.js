@@ -343,7 +343,7 @@ const ChatScreen = () => {
 
       {reminders.length > 0 && (
         <View style={styles.reminderBar}>
-          <Icon name="cake" size={18} color="#b45309" />
+          <Icon name="cake" size={18} color="#A4653A" />
           <Text style={styles.reminderBarText}>
             {reminders
               .map(
@@ -369,7 +369,7 @@ const ChatScreen = () => {
         }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Icon name="chat-bubble-outline" size={64} color="#d1d5db" />
+            <Icon name="chat-bubble-outline" size={64} color="#E5D5C4" />
             <Text style={styles.emptyText}>开始对话吧</Text>
             <Text style={styles.emptySubtext}>
               告诉我你今天做了什么，或者有什么计划
@@ -386,7 +386,7 @@ const ChatScreen = () => {
           value={inputText}
           onChangeText={setInputText}
           placeholder="输入你的想法、任务或问题..."
-          placeholderTextColor="#9ca3af"
+          placeholderTextColor="#B3A397"
           multiline
           maxLength={2000}
         />
@@ -408,12 +408,15 @@ const ChatScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#FFF8F0',
   },
   header: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#E8996C',
     padding: 16,
-    paddingTop: 8,
+    paddingTop: 12,
+    paddingBottom: 18,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
   },
   headerTitle: {
     fontSize: 20,
@@ -422,23 +425,23 @@ const styles = StyleSheet.create({
   },
   headerSubtitle: {
     fontSize: 14,
-    color: '#e0e7ff',
+    color: '#FFE9D9',
     marginTop: 4,
   },
   reminderBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fef3c7',
+    backgroundColor: '#FDEFE2',
     paddingHorizontal: 16,
     paddingVertical: 10,
     gap: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#fcd34d',
+    borderBottomColor: '#F3D6BC',
   },
   reminderBarText: {
     flex: 1,
     fontSize: 13,
-    color: '#92400e',
+    color: '#8C5A33',
     lineHeight: 18,
   },
   messageList: {
@@ -463,21 +466,21 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   userBubble: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#E8996C',
     borderBottomRightRadius: 4,
   },
   aiBubble: {
     backgroundColor: '#fff',
     borderBottomLeftRadius: 4,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    shadowColor: '#C9A488',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 2,
   },
   messageText: {
     fontSize: 16,
-    color: '#1f2937',
+    color: '#4A3B33',
     lineHeight: 22,
   },
   userMessageText: {
@@ -485,7 +488,7 @@ const styles = StyleSheet.create({
   },
   timestamp: {
     fontSize: 11,
-    color: '#9ca3af',
+    color: '#B3A397',
     marginTop: 4,
   },
   emptyContainer: {
@@ -497,12 +500,12 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#374151',
+    color: '#4A3B33',
     marginTop: 16,
   },
   emptySubtext: {
     fontSize: 14,
-    color: '#6b7280',
+    color: '#8C7A6E',
     marginTop: 8,
     textAlign: 'center',
   },
@@ -513,16 +516,16 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   quickActionButton: {
-    backgroundColor: '#eef2ff',
+    backgroundColor: '#FCEFE6',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#c7d2fe',
+    borderColor: '#F3D6BC',
   },
   quickActionText: {
     fontSize: 13,
-    color: '#6366f1',
+    color: '#E8996C',
     fontWeight: '500',
   },
   inputContainer: {
@@ -530,21 +533,21 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#fff',
     borderTopWidth: 1,
-    borderTopColor: '#e5e7eb',
+    borderTopColor: '#F0E0D2',
     alignItems: 'flex-end',
   },
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#d1d5db',
+    borderColor: '#E5D5C4',
     borderRadius: 24,
     paddingHorizontal: 16,
     paddingVertical: 10,
     paddingRight: 48,
     fontSize: 16,
     maxHeight: 120,
-    color: '#1f2937',
-    backgroundColor: '#f9fafb',
+    color: '#4A3B33',
+    backgroundColor: '#FFFBF6',
   },
   sendButton: {
     position: 'absolute',
@@ -553,12 +556,12 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#6366f1',
+    backgroundColor: '#E8996C',
     justifyContent: 'center',
     alignItems: 'center',
   },
   sendButtonDisabled: {
-    backgroundColor: '#c7d2fe',
+    backgroundColor: '#F3D6BC',
   },
 });
 

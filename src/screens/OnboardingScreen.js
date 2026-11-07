@@ -38,7 +38,7 @@ const OnboardingScreen = ({navigation}) => {
   const renderStep1 = () => (
     <View style={styles.stepContainer}>
       <View style={styles.iconContainer}>
-        <Icon name="waving-hand" size={64} color="#6366f1" />
+        <Icon name="waving-hand" size={64} color="#E8996C" />
       </View>
       <Text style={styles.title}>欢迎使用 AI 生活管家</Text>
       <Text style={styles.subtitle}>
@@ -63,7 +63,7 @@ const OnboardingScreen = ({navigation}) => {
         value={userName}
         onChangeText={setUserName}
         placeholder="输入你的名字或昵称"
-        placeholderTextColor="#9ca3af"
+        placeholderTextColor="#B3A397"
       />
       <TouchableOpacity style={styles.button} onPress={() => setStep(3)}>
         <Text style={styles.buttonText}>下一步</Text>
@@ -105,7 +105,7 @@ const OnboardingScreen = ({navigation}) => {
         value={apiKey}
         onChangeText={setApiKey}
         placeholder="粘贴你的 API Key"
-        placeholderTextColor="#9ca3af"
+        placeholderTextColor="#B3A397"
         autoCapitalize="none"
         autoCorrect={false}
       />
@@ -140,7 +140,7 @@ const OnboardingScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#FFF8F0',
   },
   stepContainer: {
     flex: 1,
@@ -154,13 +154,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#1f2937',
+    color: '#4A3B33',
     textAlign: 'center',
     marginBottom: 16,
   },
   subtitle: {
     fontSize: 16,
-    color: '#4b5563',
+    color: '#7A6A5F',
     textAlign: 'center',
     lineHeight: 24,
     marginBottom: 32,
@@ -168,31 +168,31 @@ const styles = StyleSheet.create({
   stepTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1f2937',
+    color: '#4A3B33',
     marginBottom: 8,
   },
   stepDescription: {
     fontSize: 14,
-    color: '#6b7280',
+    color: '#8C7A6E',
     marginBottom: 24,
     lineHeight: 20,
   },
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#374151',
+    color: '#4A3B33',
     marginBottom: 8,
     marginTop: 16,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#d1d5db',
+    borderColor: '#EADACB',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 16,
-    color: '#1f2937',
-    backgroundColor: '#fff',
+    color: '#4A3B33',
+    backgroundColor: '#FFFBF6',
     marginBottom: 24,
   },
   providerGrid: {
@@ -204,46 +204,46 @@ const styles = StyleSheet.create({
   providerCard: {
     paddingHorizontal: 20,
     paddingVertical: 12,
-    borderRadius: 12,
+    borderRadius: 16,
     backgroundColor: '#fff',
     borderWidth: 2,
-    borderColor: '#e5e7eb',
+    borderColor: '#F0E0D2',
     minWidth: '45%',
     alignItems: 'center',
   },
   providerCardActive: {
-    borderColor: '#6366f1',
-    backgroundColor: '#eef2ff',
+    borderColor: '#E8996C',
+    backgroundColor: '#FCEFE6',
   },
   providerName: {
     fontSize: 15,
     fontWeight: '500',
-    color: '#4b5563',
+    color: '#7A6A5F',
   },
   providerNameActive: {
-    color: '#6366f1',
+    color: '#E8996C',
   },
   helpBox: {
-    backgroundColor: '#eff6ff',
-    borderRadius: 12,
+    backgroundColor: '#FCEFE6',
+    borderRadius: 16,
     padding: 16,
     marginBottom: 24,
   },
   helpTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1d4ed8',
+    color: '#A4653A',
     marginBottom: 8,
   },
   helpText: {
     fontSize: 13,
-    color: '#3b82f6',
+    color: '#C9774B',
     lineHeight: 20,
   },
   button: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#E8996C',
     paddingVertical: 16,
-    borderRadius: 12,
+    borderRadius: 16,
     alignItems: 'center',
     marginTop: 16,
   },

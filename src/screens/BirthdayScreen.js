@@ -100,7 +100,7 @@ const BirthdayScreen = () => {
     <ScrollView style={styles.container}>
       {upcoming.length > 0 && (
         <View style={styles.reminderBanner}>
-          <Icon name="cake" size={28} color="#b45309" />
+          <Icon name="cake" size={28} color="#A4653A" />
           <View style={styles.reminderInfo}>
             <Text style={styles.reminderTitle}>生日提醒</Text>
             {upcoming.map((item) => (
@@ -125,7 +125,7 @@ const BirthdayScreen = () => {
           <TextInput
             style={styles.input}
             placeholder="姓名"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor="#B3A397"
             value={form.name}
             onChangeText={(v) => setForm({...form, name: v})}
           />
@@ -133,7 +133,7 @@ const BirthdayScreen = () => {
             <TextInput
               style={[styles.input, styles.flex]}
               placeholder="月（如 5）"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor="#B3A397"
               keyboardType="numeric"
               value={form.month}
               onChangeText={(v) => setForm({...form, month: v})}
@@ -141,7 +141,7 @@ const BirthdayScreen = () => {
             <TextInput
               style={[styles.input, styles.flex]}
               placeholder="日（如 20）"
-              placeholderTextColor="#9ca3af"
+              placeholderTextColor="#B3A397"
               keyboardType="numeric"
               value={form.day}
               onChangeText={(v) => setForm({...form, day: v})}
@@ -150,7 +150,7 @@ const BirthdayScreen = () => {
           <TextInput
             style={styles.input}
             placeholder="关系（如：母亲 / 大学同学）"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor="#B3A397"
             value={form.relation}
             onChangeText={(v) => setForm({...form, relation: v})}
           />
@@ -162,7 +162,7 @@ const BirthdayScreen = () => {
 
       {birthdays.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <Icon name="cake" size={64} color="#d1d5db" />
+          <Icon name="cake" size={64} color="#EADACB" />
           <Text style={styles.emptyText}>还没有生日记录</Text>
           <Text style={styles.emptySubtext}>
             在聊天里告诉 AI「我妈生日是5月20日」即可自动记忆
@@ -196,10 +196,10 @@ const BirthdayScreen = () => {
                 onPress={() => handleAdvice(item)}
                 disabled={loadingId === item.id}>
                 {loadingId === item.id ? (
-                  <ActivityIndicator size="small" color="#6366f1" />
+                  <ActivityIndicator size="small" color="#E8996C" />
                 ) : (
                   <>
-                    <Icon name="card-giftcard" size={18} color="#6366f1" />
+                    <Icon name="card-giftcard" size={18} color="#E8996C" />
                     <Text style={styles.adviceButtonText}>礼物与行程建议</Text>
                   </>
                 )}
@@ -207,7 +207,7 @@ const BirthdayScreen = () => {
               <TouchableOpacity
                 style={styles.deleteButton}
                 onPress={() => handleDelete(item)}>
-                <Icon name="delete" size={18} color="#dc2626" />
+                <Icon name="delete" size={18} color="#C96A5B" />
               </TouchableOpacity>
             </View>
 
@@ -226,16 +226,16 @@ const BirthdayScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#FFF8F0',
     padding: 16,
   },
   reminderBanner: {
     flexDirection: 'row',
-    backgroundColor: '#fef3c7',
-    borderRadius: 12,
+    backgroundColor: '#FDEFE2',
+    borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#fcd34d',
+    borderColor: '#F3D6BC',
     marginBottom: 16,
   },
   reminderInfo: {
@@ -245,21 +245,21 @@ const styles = StyleSheet.create({
   reminderTitle: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#b45309',
+    color: '#A4653A',
     marginBottom: 4,
   },
   reminderText: {
     fontSize: 13,
-    color: '#92400e',
+    color: '#8C5A33',
     lineHeight: 20,
   },
   addButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#6366f1',
+    backgroundColor: '#E8996C',
     paddingVertical: 12,
-    borderRadius: 10,
+    borderRadius: 14,
     gap: 6,
     marginBottom: 16,
   },
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
   },
   formCard: {
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 16,
     marginBottom: 16,
     gap: 10,
@@ -278,17 +278,18 @@ const styles = StyleSheet.create({
   formTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1f2937',
+    color: '#4A3B33',
     marginBottom: 4,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: 8,
+    borderColor: '#EADACB',
+    borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 15,
-    color: '#1f2937',
+    color: '#4A3B33',
+    backgroundColor: '#FFFBF6',
   },
   row: {
     flexDirection: 'row',
@@ -298,9 +299,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   saveButton: {
-    backgroundColor: '#22c55e',
+    backgroundColor: '#8FBF8F',
     paddingVertical: 12,
-    borderRadius: 8,
+    borderRadius: 12,
     alignItems: 'center',
   },
   saveButtonText: {
@@ -310,14 +311,14 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 16,
     marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    shadowColor: '#C9A488',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 2,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -330,16 +331,16 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1f2937',
+    color: '#4A3B33',
   },
   date: {
     fontSize: 14,
-    color: '#6b7280',
+    color: '#8C7A6E',
     marginTop: 4,
   },
   relationBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: '#eef2ff',
+    backgroundColor: '#FCEFE6',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
@@ -347,15 +348,15 @@ const styles = StyleSheet.create({
   },
   relationText: {
     fontSize: 12,
-    color: '#6366f1',
+    color: '#E8996C',
   },
   relationHint: {
     fontSize: 12,
-    color: '#f59e0b',
+    color: '#D9A05B',
     marginTop: 8,
   },
   daysBadge: {
-    backgroundColor: '#fef2f2',
+    backgroundColor: '#FBEDE9',
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 10,
@@ -363,7 +364,7 @@ const styles = StyleSheet.create({
   daysText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#dc2626',
+    color: '#C96A5B',
   },
   cardActions: {
     flexDirection: 'row',
@@ -377,31 +378,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 6,
     borderWidth: 1,
-    borderColor: '#c7d2fe',
-    borderRadius: 8,
+    borderColor: '#F3D6BC',
+    borderRadius: 12,
     paddingVertical: 10,
     marginRight: 8,
-    backgroundColor: '#eef2ff',
+    backgroundColor: '#FCEFE6',
   },
   adviceButtonText: {
     fontSize: 14,
-    color: '#6366f1',
+    color: '#E8996C',
     fontWeight: '500',
   },
   deleteButton: {
     padding: 10,
     borderRadius: 8,
-    backgroundColor: '#fef2f2',
+    backgroundColor: '#FBEDE9',
   },
   adviceBox: {
     marginTop: 12,
-    backgroundColor: '#f8fafc',
-    borderRadius: 8,
+    backgroundColor: '#FFF8F0',
+    borderRadius: 12,
     padding: 12,
   },
   adviceText: {
     fontSize: 14,
-    color: '#374151',
+    color: '#4A3B33',
     lineHeight: 22,
   },
   emptyContainer: {
@@ -411,12 +412,12 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#374151',
+    color: '#4A3B33',
     marginTop: 16,
   },
   emptySubtext: {
     fontSize: 14,
-    color: '#6b7280',
+    color: '#8C7A6E',
     marginTop: 8,
     textAlign: 'center',
     paddingHorizontal: 24,

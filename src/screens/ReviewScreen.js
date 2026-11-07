@@ -235,14 +235,14 @@ const ReviewScreen = () => {
               stats.tasks.total || 0,
               `完成 ${stats.tasks.completed || 0} / 待办 ${stats.tasks.pending || 0}`,
               'assignment',
-              '#6366f1',
+              '#E8996C',
             )}
             {renderStatCard(
               '对话记录',
               stats.chats,
               '与AI的交流次数',
               'chat',
-              '#22c55e',
+              '#8FBF8F',
             )}
           </View>
 
@@ -320,7 +320,7 @@ const ReviewScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#FFF8F0',
   },
   tabContainer: {
     flexDirection: 'row',
@@ -330,20 +330,20 @@ const styles = StyleSheet.create({
   tab: {
     flex: 1,
     paddingVertical: 12,
-    borderRadius: 12,
+    borderRadius: 16,
     backgroundColor: '#fff',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: '#F0E0D2',
   },
   tabActive: {
-    backgroundColor: '#6366f1',
-    borderColor: '#6366f1',
+    backgroundColor: '#E8996C',
+    borderColor: '#E8996C',
   },
   tabText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#4b5563',
+    color: '#7A6A5F',
   },
   tabTextActive: {
     color: '#fff',
@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
   },
   periodText: {
     fontSize: 14,
-    color: '#6b7280',
+    color: '#8C7A6E',
     marginBottom: 16,
     textAlign: 'center',
   },
@@ -364,14 +364,14 @@ const styles = StyleSheet.create({
   statCard: {
     flex: 1,
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 16,
     borderLeftWidth: 4,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    shadowColor: '#C9A488',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 2,
   },
   statHeader: {
     flexDirection: 'row',
@@ -382,28 +382,28 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#1f2937',
+    color: '#4A3B33',
   },
   statTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#374151',
+    color: '#4A3B33',
   },
   statSubtitle: {
     fontSize: 12,
-    color: '#6b7280',
+    color: '#8C7A6E',
     marginTop: 4,
   },
   categorySection: {
     marginTop: 16,
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 16,
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1f2937',
+    color: '#4A3B33',
     marginBottom: 12,
   },
   categoryList: {
@@ -415,25 +415,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#f3f4f6',
+    borderBottomColor: '#FAF1E7',
   },
   categoryName: {
     fontSize: 14,
-    color: '#374151',
+    color: '#4A3B33',
   },
   categoryCount: {
     fontSize: 14,
-    color: '#6366f1',
+    color: '#E8996C',
     fontWeight: '500',
   },
   pendingSection: {
     margin: 16,
     marginTop: 0,
-    backgroundColor: '#fffbeb',
-    borderRadius: 12,
+    backgroundColor: '#FDF3E7',
+    borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#fcd34d',
+    borderColor: '#F3D6BC',
   },
   pendingItem: {
     backgroundColor: '#fff',
@@ -443,7 +443,7 @@ const styles = StyleSheet.create({
   },
   pendingContent: {
     fontSize: 14,
-    color: '#374151',
+    color: '#4A3B33',
     marginBottom: 8,
     lineHeight: 20,
   },
@@ -455,22 +455,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: '#FAF1E7',
   },
   pendingActionText: {
     fontSize: 12,
-    color: '#4b5563',
+    color: '#7A6A5F',
   },
   generateSection: {
     padding: 16,
   },
   generateButton: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#E8996C',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 16,
-    borderRadius: 12,
+    borderRadius: 14,
     gap: 8,
   },
   generateButtonText: {
@@ -482,17 +482,17 @@ const styles = StyleSheet.create({
     margin: 16,
     marginTop: 0,
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 16,
   },
   reviewContent: {
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#FFF8F0',
     borderRadius: 8,
     padding: 16,
   },
   reviewText: {
     fontSize: 14,
-    color: '#374151',
+    color: '#4A3B33',
     lineHeight: 24,
   },
 });

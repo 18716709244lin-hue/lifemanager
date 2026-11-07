@@ -39,10 +39,14 @@ function TabNavigator() {
           }
           return <Icon name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#6366f1',
-        tabBarInactiveTintColor: 'gray',
+        tabBarActiveTintColor: '#E8996C',
+        tabBarInactiveTintColor: '#A8988C',
+        tabBarStyle: {
+          backgroundColor: '#FFFDF9',
+          borderTopColor: '#F2E3D5',
+        },
         headerStyle: {
-          backgroundColor: '#6366f1',
+          backgroundColor: '#E8996C',
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -101,7 +105,7 @@ export default function App() {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#6366f1" />
+        <ActivityIndicator size="large" color="#E8996C" />
         <Text style={styles.loadingText}>初始化中...</Text>
       </View>
     );
@@ -124,11 +128,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#FFF8F0',
   },
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#64748b',
+    color: '#8C7A6E',
   },
 });

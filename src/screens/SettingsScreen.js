@@ -145,7 +145,7 @@ const SettingsScreen = () => {
             value={apiKey}
             onChangeText={setApiKey}
             placeholder="输入你的 API Key"
-            placeholderTextColor="#9ca3af"
+            placeholderTextColor="#B3A397"
             secureTextEntry={!showApiKey}
             autoCapitalize="none"
             autoCorrect={false}
@@ -156,7 +156,7 @@ const SettingsScreen = () => {
             <Icon
               name={showApiKey ? 'visibility' : 'visibility-off'}
               size={24}
-              color="#6b7280"
+              color="#8C7A6E"
             />
           </TouchableOpacity>
         </View>
@@ -245,24 +245,24 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#FFF8F0',
     padding: 16,
   },
   section: {
     marginBottom: 24,
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 16,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
+    shadowColor: '#C9A488',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
     elevation: 2,
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1f2937',
+    color: '#4A3B33',
     marginBottom: 12,
   },
   providerContainer: {
@@ -274,17 +274,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: '#FAF1E7',
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: '#F0E0D2',
   },
   providerButtonActive: {
-    backgroundColor: '#6366f1',
-    borderColor: '#6366f1',
+    backgroundColor: '#E8996C',
+    borderColor: '#E8996C',
   },
   providerButtonText: {
     fontSize: 14,
-    color: '#4b5563',
+    color: '#7A6A5F',
   },
   providerButtonTextActive: {
     color: '#fff',
@@ -297,13 +297,13 @@ const styles = StyleSheet.create({
   apiKeyInput: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#d1d5db',
-    borderRadius: 8,
+    borderColor: '#EADACB',
+    borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 14,
-    color: '#1f2937',
-    backgroundColor: '#fff',
+    color: '#4A3B33',
+    backgroundColor: '#FFFBF6',
   },
   eyeButton: {
     marginLeft: 8,
@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
   },
   hintText: {
     fontSize: 12,
-    color: '#6b7280',
+    color: '#8C7A6E',
     marginTop: 8,
   },
   modelContainer: {
@@ -323,17 +323,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: '#FAF1E7',
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: '#F0E0D2',
   },
   modelButtonActive: {
-    backgroundColor: '#6366f1',
-    borderColor: '#6366f1',
+    backgroundColor: '#E8996C',
+    borderColor: '#E8996C',
   },
   modelButtonText: {
     fontSize: 13,
-    color: '#4b5563',
+    color: '#7A6A5F',
   },
   modelButtonTextActive: {
     color: '#fff',
@@ -349,14 +349,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 12,
-    borderRadius: 8,
+    borderRadius: 12,
     gap: 8,
   },
   testButton: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: '#C9774B',
   },
   saveButton: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#E8996C',
   },
   buttonText: {
     color: '#fff',
@@ -365,37 +365,37 @@ const styles = StyleSheet.create({
   },
   dangerSection: {
     marginBottom: 24,
-    backgroundColor: '#fef2f2',
-    borderRadius: 12,
+    backgroundColor: '#FBEDE9',
+    borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#fecaca',
+    borderColor: '#F3C9C1',
   },
   dangerTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#dc2626',
+    color: '#C96A5B',
     marginBottom: 12,
   },
   dangerButton: {
-    backgroundColor: '#dc2626',
+    backgroundColor: '#C96A5B',
   },
   infoSection: {
-    backgroundColor: '#eff6ff',
-    borderRadius: 12,
+    backgroundColor: '#FCEFE6',
+    borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#bfdbfe',
+    borderColor: '#F3D6BC',
   },
   infoTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1d4ed8',
+    color: '#A4653A',
     marginBottom: 8,
   },
   infoText: {
     fontSize: 13,
-    color: '#3b82f6',
+    color: '#C9774B',
     lineHeight: 20,
   },
 });

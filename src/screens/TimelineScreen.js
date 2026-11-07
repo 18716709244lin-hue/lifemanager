@@ -182,7 +182,7 @@ const TimelineScreen = () => {
         }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Icon name="event-note" size={64} color="#d1d5db" />
+            <Icon name="event-note" size={64} color="#E5D5C4" />
             <Text style={styles.emptyText}>暂无任务</Text>
             <Text style={styles.emptySubtext}>
               在聊天中告诉 AI 你的计划，自动提取任务
@@ -197,7 +197,7 @@ const TimelineScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#FFF8F0',
   },
   filterContainer: {
     flexDirection: 'row',
@@ -210,15 +210,15 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: '#fff',
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: '#F0E0D2',
   },
   filterButtonActive: {
-    backgroundColor: '#6366f1',
-    borderColor: '#6366f1',
+    backgroundColor: '#E8996C',
+    borderColor: '#E8996C',
   },
   filterText: {
     fontSize: 14,
-    color: '#4b5563',
+    color: '#7A6A5F',
     fontWeight: '500',
   },
   filterTextActive: {
@@ -235,18 +235,18 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#374151',
+    color: '#4A3B33',
   },
   taskCard: {
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 16,
-    marginBottom: 8,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    marginBottom: 10,
+    shadowColor: '#C9A488',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 2,
   },
   taskContent: {
     flexDirection: 'row',
@@ -257,15 +257,15 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#d1d5db',
+    borderColor: '#E5D5C4',
     marginRight: 12,
     marginTop: 2,
     justifyContent: 'center',
     alignItems: 'center',
   },
   checkboxCompleted: {
-    backgroundColor: '#22c55e',
-    borderColor: '#22c55e',
+    backgroundColor: '#8FBF8F',
+    borderColor: '#8FBF8F',
   },
   taskInfo: {
     flex: 1,
@@ -273,16 +273,16 @@ const styles = StyleSheet.create({
   taskTitle: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#1f2937',
+    color: '#4A3B33',
     lineHeight: 22,
   },
   taskTitleCompleted: {
     textDecorationLine: 'line-through',
-    color: '#9ca3af',
+    color: '#B3A397',
   },
   taskDescription: {
     fontSize: 14,
-    color: '#6b7280',
+    color: '#8C7A6E',
     marginTop: 4,
     lineHeight: 20,
   },
@@ -306,11 +306,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   priorityHigh: {
-    backgroundColor: '#fef2f2',
+    backgroundColor: '#FBEDE9',
   },
   priorityText: {
     fontSize: 12,
-    color: '#dc2626',
+    color: '#C96A5B',
     fontWeight: '500',
   },
   emptyContainer: {
@@ -320,12 +320,12 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#374151',
+    color: '#4A3B33',
     marginTop: 16,
   },
   emptySubtext: {
     fontSize: 14,
-    color: '#6b7280',
+    color: '#8C7A6E',
     marginTop: 8,
     textAlign: 'center',
   },
