@@ -44,7 +44,7 @@ jobs:
           if os.path.exists(p):
               s = open(p).read()
               if "skip-metadata-version-check" not in s:
-                  s += "\ntasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach { kotlinOptions.freeCompilerArgs = kotlinOptions.freeCompilerArgs + \"-Xskip-metadata-version-check\" }\n"
+                  s += "\ntasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach { kotlinOptions.freeCompilerArgs = kotlinOptions.freeCompilerArgs + \"-Xskip-metadata-version-check\"; kotlinOptions.jvmTarget = \"17\" }\n"
                   open(p, "w").write(s)
                   print("patched")
           PY
