@@ -55,6 +55,23 @@ const PROVIDERS = {
     }),
     parseResponse: (data) => data.choices[0].message.content,
   },
+  zhipu: {
+    name: '智谱 GLM',
+    baseUrl: 'https://open.bigmodel.cn/api/paas/v4',
+    defaultModel: 'glm-4-flash',
+    models: ['glm-4-flash', 'glm-4-air', 'glm-4-plus'],
+    headers: (apiKey) => ({
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    }),
+    formatRequest: (messages, model) => ({
+      model,
+      messages,
+      temperature: 0.7,
+      max_tokens: 2000,
+    }),
+    parseResponse: (data) => data.choices[0].message.content,
+  },
   qwen: {
     name: '通义千问',
     baseUrl: 'https://dashscope.aliyuncs.com/api/v1',
@@ -306,8 +323,8 @@ ${birthday.notes ? `备注：${birthday.notes}` : ''}
   }
 };
 
-// 获取可用模型列表
-export const getAvailableModels = async (provider) => {
+// 获取可用模型列表（同步函数，UI 直接调用）
+export const getAvailableModels = (provider) => {
   const config = PROVIDERS[provider];
   return config ? config.models : [];
 };

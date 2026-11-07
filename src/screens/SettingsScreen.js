@@ -39,9 +39,7 @@ const SettingsScreen = () => {
     if (provider) {
       const models = getAvailableModels(provider);
       setAvailableModels(models);
-      if (!model && models.length > 0) {
-        setModel(models[0]);
-      }
+      setModel((prev) => (models.includes(prev) ? prev : models[0]));
     }
   }, [provider]);
 
@@ -230,6 +228,7 @@ const SettingsScreen = () => {
         <Text style={styles.infoTitle}>如何获取 API Key？</Text>
         <Text style={styles.infoText}>
           • DeepSeek: 访问 platform.deepseek.com 注册并创建 API Key{'\n'}
+          • 智谱 GLM: 访问 bigmodel.cn 注册并创建 API Key（glm-4-flash 免费）{'\n'}
           • OpenAI: 访问 platform.openai.com 创建 API Key{'\n'}
           • Claude: 访问 console.anthropic.com 获取 API Key{'\n'}
           • 通义千问: 访问 dashscope.aliyun.com 开通服务

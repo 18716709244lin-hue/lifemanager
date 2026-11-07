@@ -8,6 +8,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {saveApiKey, saveAiProvider, saveUserName, setOnboardingCompleted} from '../services/StorageService';
@@ -22,7 +23,7 @@ const OnboardingScreen = ({navigation}) => {
 
   const handleComplete = async () => {
     if (!apiKey.trim()) {
-      alert('请输入 API Key');
+      Alert.alert('提示', '请输入 API Key');
       return;
     }
 
@@ -113,6 +114,7 @@ const OnboardingScreen = ({navigation}) => {
         <Text style={styles.helpTitle}>如何获取 API Key？</Text>
         <Text style={styles.helpText}>
           • DeepSeek: platform.deepseek.com{'\n'}
+          • 智谱 GLM: bigmodel.cn（glm-4-flash 免费）{'\n'}
           • OpenAI: platform.openai.com{'\n'}
           • 通义千问: dashscope.aliyun.com
         </Text>

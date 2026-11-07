@@ -109,12 +109,11 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{headerShown: false}}>
-        {!hasApiKey ? (
-          <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-        ) : (
-          <Stack.Screen name="Main" component={TabNavigator} />
-        )}
+      <Stack.Navigator
+        initialRouteName={hasApiKey ? 'Main' : 'Onboarding'}
+        screenOptions={{headerShown: false}}>
+        <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+        <Stack.Screen name="Main" component={TabNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
   );
