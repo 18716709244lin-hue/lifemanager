@@ -47,3 +47,22 @@ allprojects {
         maven { url 'https://www.jitpack.io' }
     }
 }
+
+// 统一所有模块的 Java / Kotlin 编译目标为 17，避免 JVM target 不一致错误
+subprojects {
+    afterEvaluate { project ->
+        if (project.hasProperty("android")) {
+            project.android {
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_17
+                    targetCompatibility JavaVersion.VERSION_17
+                }
+            }
+        }
+        tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+            kotlinOptions {
+                jvmTarget = "17"
+            }
+        }
+    }
+}
