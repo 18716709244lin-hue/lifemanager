@@ -12,7 +12,7 @@ import {
   Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {v4 as uuidv4} from 'uuid';
+import {generateId} from '../utils/id';
 import {executeQuery, executeQueryAll} from '../database/Database';
 import {
   sendMessageToAI,
@@ -73,7 +73,7 @@ const ChatScreen = () => {
   };
 
   const saveMessage = async (role, content, category = null, sentiment = null) => {
-    const id = uuidv4();
+    const id = generateId();
     const timestamp = Date.now();
     try {
       await executeQuery(
@@ -117,13 +117,13 @@ const ChatScreen = () => {
     setInputText('');
     setIsLoading(true);
 
-    // 保存用户消息
-    const savedUserMessage = await saveMessage('user', userMessage);
-    if (savedUserMessage) {
-      setMessages((prev) => [...prev, savedUserMessage]);
-    }
-
     try {
+      // 保存用户消息
+      const savedUserMessage = await saveMessage('user', userMessage);
+      if (savedUserMessage) {
+        setMessages((prev) => [...prev, savedUserMessage]);
+      }
+
       // 正在等待用户说明与寿星的关系（下一条短消息视为回答）
       if (awaitingRelationFor && userMessage.length <= 30) {
         const relation = userMessage;
@@ -154,17 +154,17 @@ const ChatScreen = () => {
         return;
       }
 
-      // 分析文本（分类、提取任务、生日）
-      const analysis = await analyzeText(userMessage);
-
       // 构建对话历史（最近10条）
       const recentHistory = messages.slice(-10).map((msg) => ({
         role: msg.role,
         content: msg.content,
       }));
 
-      // 发送到AI
-      const aiResponse = await sendMessageToAI(userMessage, recentHistory);
+      // 分析文本与获取 AI 回复并行，避免两次请求串行拖慢首条回复
+      const [analysis, aiResponse] = await Promise.all([
+        analyzeText(userMessage),
+        sendMessageToAI(userMessage, recentHistory),
+      ]);
 
       // 保存AI回复
       const savedAiMessage = await saveMessage(
@@ -181,7 +181,7 @@ const ChatScreen = () => {
       // 处理提取到的任务：保存 + 自动生成方案/思考问题/风险
       if (analysis?.tasks && analysis.tasks.length > 0) {
         for (const task of analysis.tasks) {
-          const taskId = uuidv4();
+          const taskId = generateId();
           await executeQuery(
             `INSERT INTO tasks (id, title, description, category, priority, due_date, source_conversation_id)
              VALUES (?, ?, ?, ?, ?, ?, ?)`,
@@ -205,7 +205,7 @@ const ChatScreen = () => {
               `INSERT INTO task_plans (id, task_id, task_title, plan_steps, questions, risks)
                VALUES (?, ?, ?, ?, ?, ?)`,
               [
-                uuidv4(),
+                generateId(),
                 taskId,
                 task.title,
                 JSON.stringify(task.plan_steps || []),
@@ -267,13 +267,17 @@ const ChatScreen = () => {
       }
     } catch (error) {
       Alert.alert('错误', error.message);
-      // 保存错误提示
-      const errorMessage = await saveMessage(
-        'assistant',
-        `抱歉，我遇到了问题：${error.message}\n\n请检查网络连接和 API Key 设置。`,
-      );
-      if (errorMessage) {
-        setMessages((prev) => [...prev, errorMessage]);
+      // 保存错误提示（保存失败不应再抛异常，否则用户看不到任何反馈）
+      try {
+        const errorMessage = await saveMessage(
+          'assistant',
+          `抱歉，我遇到了问题：${error.message}\n\n请检查网络连接和 API Key 设置。`,
+        );
+        if (errorMessage) {
+          setMessages((prev) => [...prev, errorMessage]);
+        }
+      } catch (saveError) {
+        console.error('Error saving error message:', saveError);
       }
     } finally {
       setIsLoading(false);

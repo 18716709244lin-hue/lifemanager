@@ -1,5 +1,5 @@
 import {executeQuery, executeQueryAll, executeQueryFirst} from '../database/Database';
-import {v4 as uuidv4} from 'uuid';
+import {generateId} from '../utils/id';
 
 /**
  * 计算距离下一次生日的天数（0 表示今天）
@@ -36,7 +36,7 @@ export const saveBirthday = async (info) => {
     return {...existing, ...info, id: existing.id};
   }
 
-  const id = uuidv4();
+  const id = generateId();
   await executeQuery(
     `INSERT INTO birthdays (id, name, month, day, year, relation, notes, reminder_days)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
