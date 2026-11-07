@@ -330,7 +330,7 @@ const ChatScreen = () => {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>你好，{userName}</Text>
