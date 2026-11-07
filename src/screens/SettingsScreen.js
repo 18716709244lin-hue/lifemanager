@@ -27,7 +27,7 @@ const SettingsScreen = () => {
   const [model, setModel] = useState('');
   const [availableModels, setAvailableModels] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [showApiKey, setShowApiKey] = useState(false);
+  const [showApiKey, setShowApiKey] = useState(true);
   const [providers, setProviders] = useState([]);
 
   useEffect(() => {
@@ -98,9 +98,13 @@ const SettingsScreen = () => {
 
     setIsLoading(true);
     try {
+      // 先保存当前输入的配置，再测试，确保用的是刚填的 Key
+      await saveApiKey(apiKey.trim());
+      await saveAiProvider(provider);
+      await saveAiModel(model);
       const {sendMessageToAI} = require('../services/AIService');
       await sendMessageToAI('你好，这是一条测试消息');
-      Alert.alert('成功', 'API 连接正常！');
+      Alert.alert('成功', 'API 连接正常，设置已保存！');
     } catch (error) {
       Alert.alert('连接失败', error.message);
     } finally {

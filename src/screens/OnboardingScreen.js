@@ -104,10 +104,10 @@ const OnboardingScreen = ({navigation}) => {
         style={styles.input}
         value={apiKey}
         onChangeText={setApiKey}
-        placeholder="sk-..."
+        placeholder="粘贴你的 API Key"
         placeholderTextColor="#9ca3af"
-        secureTextEntry
         autoCapitalize="none"
+        autoCorrect={false}
       />
 
       <View style={styles.helpBox}>

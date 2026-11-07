@@ -153,14 +153,25 @@ export const sendMessageToAI = async (userMessage, conversationHistory = []) => 
     return config.parseResponse(response.data);
   } catch (error) {
     console.error('AI API Error:', error.response?.data || error.message);
-    if (error.response?.status === 401) {
-      throw new Error('API Key 无效，请检查设置');
-    } else if (error.response?.status === 429) {
-      throw new Error('API 调用次数超限，请稍后重试');
+    if (error.response) {
+      const status = error.response.status;
+      let detail = '';
+      try {
+        detail = (typeof error.response.data === 'string'
+          ? error.response.data
+          : JSON.stringify(error.response.data || {})
+        ).slice(0, 200);
+      } catch (e) {}
+      if (status === 401) {
+        throw new Error(`API Key 无效或服务商选择错误 (HTTP 401)。${detail}`);
+      } else if (status === 429) {
+        throw new Error(`调用次数超限或余额不足 (HTTP 429)。${detail}`);
+      }
+      throw new Error(`HTTP ${status}: ${detail}`);
     } else if (error.code === 'ECONNABORTED') {
       throw new Error('请求超时，请检查网络连接');
     }
-    throw new Error(`AI 服务错误: ${error.message}`);
+    throw new Error(`网络错误: ${error.message}`);
   }
 };
 
