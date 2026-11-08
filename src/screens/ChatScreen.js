@@ -412,11 +412,11 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#E8996C',
-    padding: 16,
-    paddingTop: 12,
-    paddingBottom: 18,
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
+    paddingHorizontal: 16,
+    paddingTop: 14,
+    paddingBottom: 12,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   headerTitle: {
     fontSize: 20,
@@ -424,9 +424,9 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   headerSubtitle: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#FFE9D9',
-    marginTop: 4,
+    marginTop: 2,
   },
   reminderBar: {
     flexDirection: 'row',

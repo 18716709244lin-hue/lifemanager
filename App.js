@@ -56,7 +56,7 @@ function TabNavigator() {
       <Tab.Screen
         name="Chat"
         component={ChatScreen}
-        options={{title: 'AI 管家'}}
+        options={{title: 'AI 管家', headerShown: false}}
       />
       <Tab.Screen
         name="Timeline"
