@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import {
   View,
   Text,
@@ -12,8 +12,13 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {executeQueryAll, executeQuery} from '../database/Database';
 import {generateReview} from '../services/AIService';
 import {format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, subWeeks, subMonths} from 'date-fns';
+import {useTheme} from '../theme/ThemeContext';
 
 const ReviewScreen = () => {
+  const {theme} = useTheme();
+  const c = theme.colors;
+  const styles = useMemo(() => createStyles(c), [c]);
+
   const [activeTab, setActiveTab] = useState('weekly'); // weekly, monthly
   const [isGenerating, setIsGenerating] = useState(false);
   const [reviewContent, setReviewContent] = useState(null);
@@ -235,14 +240,14 @@ const ReviewScreen = () => {
               stats.tasks.total || 0,
               `完成 ${stats.tasks.completed || 0} / 待办 ${stats.tasks.pending || 0}`,
               'assignment',
-              '#E8996C',
+              c.primary,
             )}
             {renderStatCard(
               '对话记录',
               stats.chats,
               '与AI的交流次数',
               'chat',
-              '#8FBF8F',
+              c.success,
             )}
           </View>
 
@@ -293,10 +298,10 @@ const ReviewScreen = () => {
           onPress={generateAIReview}
           disabled={isGenerating}>
           {isGenerating ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color={c.onPrimary} />
           ) : (
             <>
-              <Icon name="auto-awesome" size={24} color="#fff" />
+              <Icon name="auto-awesome" size={24} color={c.onPrimary} />
               <Text style={styles.generateButtonText}>
                 生成 {activeTab === 'weekly' ? '上周' : '上月'} AI 复盘
               </Text>
@@ -317,10 +322,11 @@ const ReviewScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (c) =>
+  StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF8F0',
+    backgroundColor: c.background,
   },
   tabContainer: {
     flexDirection: 'row',
@@ -331,29 +337,29 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 12,
     borderRadius: 16,
-    backgroundColor: '#fff',
+    backgroundColor: c.card,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#F0E0D2',
+    borderColor: c.border,
   },
   tabActive: {
-    backgroundColor: '#E8996C',
-    borderColor: '#E8996C',
+    backgroundColor: c.primary,
+    borderColor: c.primary,
   },
   tabText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#7A6A5F',
+    color: c.subtext,
   },
   tabTextActive: {
-    color: '#fff',
+    color: c.onPrimary,
   },
   statsContainer: {
     padding: 16,
   },
   periodText: {
     fontSize: 14,
-    color: '#8C7A6E',
+    color: c.subtext,
     marginBottom: 16,
     textAlign: 'center',
   },
@@ -363,11 +369,11 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: c.card,
     borderRadius: 16,
     padding: 16,
     borderLeftWidth: 4,
-    shadowColor: '#C9A488',
+    shadowColor: c.shadow,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 6,
@@ -382,28 +388,28 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#4A3B33',
+    color: c.text,
   },
   statTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#4A3B33',
+    color: c.text,
   },
   statSubtitle: {
     fontSize: 12,
-    color: '#8C7A6E',
+    color: c.subtext,
     marginTop: 4,
   },
   categorySection: {
     marginTop: 16,
-    backgroundColor: '#fff',
+    backgroundColor: c.card,
     borderRadius: 16,
     padding: 16,
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#4A3B33',
+    color: c.text,
     marginBottom: 12,
   },
   categoryList: {
@@ -415,35 +421,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#FAF1E7',
+    borderBottomColor: c.divider,
   },
   categoryName: {
     fontSize: 14,
-    color: '#4A3B33',
+    color: c.text,
   },
   categoryCount: {
     fontSize: 14,
-    color: '#E8996C',
+    color: c.primary,
     fontWeight: '500',
   },
   pendingSection: {
     margin: 16,
     marginTop: 0,
-    backgroundColor: '#FDF3E7',
+    backgroundColor: c.pendingBg,
     borderRadius: 16,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#F3D6BC',
+    borderColor: c.softBorder,
   },
   pendingItem: {
-    backgroundColor: '#fff',
+    backgroundColor: c.card,
     borderRadius: 8,
     padding: 12,
     marginBottom: 8,
   },
   pendingContent: {
     fontSize: 14,
-    color: '#4A3B33',
+    color: c.text,
     marginBottom: 8,
     lineHeight: 20,
   },
@@ -455,17 +461,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
-    backgroundColor: '#FAF1E7',
+    backgroundColor: c.surface,
   },
   pendingActionText: {
     fontSize: 12,
-    color: '#7A6A5F',
+    color: c.subtext,
   },
   generateSection: {
     padding: 16,
   },
   generateButton: {
-    backgroundColor: '#E8996C',
+    backgroundColor: c.primary,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -474,25 +480,25 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   generateButtonText: {
-    color: '#fff',
+    color: c.onPrimary,
     fontSize: 16,
     fontWeight: '600',
   },
   reviewSection: {
     margin: 16,
     marginTop: 0,
-    backgroundColor: '#fff',
+    backgroundColor: c.card,
     borderRadius: 16,
     padding: 16,
   },
   reviewContent: {
-    backgroundColor: '#FFF8F0',
+    backgroundColor: c.background,
     borderRadius: 8,
     padding: 16,
   },
   reviewText: {
     fontSize: 14,
-    color: '#4A3B33',
+    color: c.text,
     lineHeight: 24,
   },
 });

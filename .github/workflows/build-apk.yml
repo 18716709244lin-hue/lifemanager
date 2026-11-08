@@ -30,7 +30,7 @@ jobs:
           mkdir -p "$ANDROID_HOME/licenses"
           printf '24333f8a63b6825ea9c5514f83c2829b004d1fee\nd56f5187479451eabf01fb78af6dfcb131a6481e\n' > "$ANDROID_HOME/licenses/android-sdk-license"
           yes | "$SDK_MANAGER" --licenses || true
-          "$SDK_MANAGER" "platforms;android-34" "build-tools;34.0.0" "platform-tools" "ndk;25.1.8937393" "cmake;3.22.1"
+          "$SDK_MANAGER" "platforms;android-34" "build-tools;34.0.0" "platforms;android-33" "build-tools;33.0.0" "platform-tools" "ndk;25.1.8937393" "cmake;3.22.1"
 
       - name: Install dependencies
         run: npm install

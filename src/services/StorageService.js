@@ -6,6 +6,44 @@ const KEYS = {
   AI_MODEL: '@ai_model',
   USER_NAME: '@user_name',
   ONBOARDING_COMPLETED: '@onboarding_completed',
+  THEME: '@theme_key',
+  NOTIFICATIONS_ENABLED: '@notifications_enabled',
+};
+
+// 主题
+export const saveThemeKey = async (key) => {
+  try {
+    await AsyncStorage.setItem(KEYS.THEME, key);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+export const getThemeKey = async () => {
+  try {
+    return await AsyncStorage.getItem(KEYS.THEME);
+  } catch (error) {
+    return null;
+  }
+};
+
+// 通知提醒开关
+export const saveNotificationsEnabled = async (enabled) => {
+  try {
+    await AsyncStorage.setItem(KEYS.NOTIFICATIONS_ENABLED, enabled ? 'true' : 'false');
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+export const getNotificationsEnabled = async () => {
+  try {
+    return (await AsyncStorage.getItem(KEYS.NOTIFICATIONS_ENABLED)) === 'true';
+  } catch (error) {
+    return false;
+  }
 };
 
 // API Key 管理

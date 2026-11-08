@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useMemo, useRef} from 'react';
 import {
   View,
   Text,
@@ -26,15 +26,26 @@ import {
   getUpcomingBirthdays,
   daysUntilBirthday,
 } from '../services/BirthdayService';
+import {syncRemindersIfEnabled} from '../services/NotificationService';
+import {useTheme} from '../theme/ThemeContext';
+
+const PAGE_SIZE = 50;
 
 const ChatScreen = () => {
+  const {theme} = useTheme();
+  const c = theme.colors;
+  const styles = useMemo(() => createStyles(c), [c]);
+
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [userName, setUserName] = useState('朋友');
   const [reminders, setReminders] = useState([]);
   const [awaitingRelationFor, setAwaitingRelationFor] = useState(null);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const flatListRef = useRef(null);
+  const skipScrollRef = useRef(false);
 
   useEffect(() => {
     loadUserInfo();
@@ -58,7 +69,7 @@ const ChatScreen = () => {
   const loadConversationHistory = async () => {
     try {
       const history = await executeQueryAll(
-        'SELECT * FROM conversations ORDER BY timestamp DESC LIMIT 50',
+        `SELECT * FROM conversations ORDER BY timestamp DESC LIMIT ${PAGE_SIZE}`,
       );
       const formattedHistory = history.reverse().map((item) => ({
         id: item.id,
@@ -67,8 +78,40 @@ const ChatScreen = () => {
         timestamp: item.timestamp,
       }));
       setMessages(formattedHistory);
+      setHasMore(history.length === PAGE_SIZE);
     } catch (error) {
       console.error('Error loading history:', error);
+    }
+  };
+
+  const loadOlderMessages = async () => {
+    if (!hasMore || loadingMore || messages.length === 0) return;
+    setLoadingMore(true);
+    skipScrollRef.current = true;
+    try {
+      const oldest = messages[0].timestamp;
+      const history = await executeQueryAll(
+        `SELECT * FROM conversations WHERE timestamp < ?
+         ORDER BY timestamp DESC LIMIT ${PAGE_SIZE}`,
+        [oldest],
+      );
+      const older = history.reverse().map((item) => ({
+        id: item.id,
+        role: item.role,
+        content: item.content,
+        timestamp: item.timestamp,
+      }));
+      if (older.length > 0) {
+        setMessages((prev) => [...older, ...prev]);
+      } else {
+        skipScrollRef.current = false;
+      }
+      setHasMore(history.length === PAGE_SIZE);
+    } catch (error) {
+      console.error('Error loading older messages:', error);
+      skipScrollRef.current = false;
+    } finally {
+      setLoadingMore(false);
     }
   };
 
@@ -116,6 +159,7 @@ const ChatScreen = () => {
     const userMessage = inputText.trim();
     setInputText('');
     setIsLoading(true);
+    skipScrollRef.current = false;
 
     try {
       // 保存用户消息
@@ -150,6 +194,7 @@ const ChatScreen = () => {
         const saved = await saveMessage('assistant', replyText);
         if (saved) setMessages((prev) => [...prev, saved]);
         await loadReminders();
+        syncRemindersIfEnabled();
         setIsLoading(false);
         return;
       }
@@ -223,6 +268,7 @@ const ChatScreen = () => {
             }
           }
         }
+        syncRemindersIfEnabled();
       }
 
       // 处理生日记忆
@@ -264,6 +310,7 @@ const ChatScreen = () => {
           }
         }
         await loadReminders();
+        syncRemindersIfEnabled();
       }
     } catch (error) {
       Alert.alert('错误', error.message);
@@ -331,6 +378,25 @@ const ChatScreen = () => {
     </View>
   );
 
+  const renderHistoryHeader = () => {
+    if (!hasMore && !loadingMore) return null;
+    return (
+      <TouchableOpacity
+        style={styles.loadOlderButton}
+        onPress={loadOlderMessages}
+        disabled={loadingMore}>
+        {loadingMore ? (
+          <ActivityIndicator size="small" color={c.primary} />
+        ) : (
+          <>
+            <Icon name="history" size={16} color={c.primary} />
+            <Text style={styles.loadOlderText}>查看更早的消息</Text>
+          </>
+        )}
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -343,7 +409,7 @@ const ChatScreen = () => {
 
       {reminders.length > 0 && (
         <View style={styles.reminderBar}>
-          <Icon name="cake" size={18} color="#A4653A" />
+          <Icon name="cake" size={18} color={c.softText} />
           <Text style={styles.reminderBarText}>
             {reminders
               .map(
@@ -364,12 +430,17 @@ const ChatScreen = () => {
         renderItem={renderMessage}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.messageList}
-        onContentSizeChange={() =>
-          flatListRef.current?.scrollToEnd({animated: true})
-        }
+        ListHeaderComponent={renderHistoryHeader}
+        onContentSizeChange={() => {
+          if (skipScrollRef.current) {
+            skipScrollRef.current = false;
+            return;
+          }
+          flatListRef.current?.scrollToEnd({animated: true});
+        }}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Icon name="chat-bubble-outline" size={64} color="#E5D5C4" />
+            <Icon name="chat-bubble-outline" size={64} color={c.iconMuted} />
             <Text style={styles.emptyText}>开始对话吧</Text>
             <Text style={styles.emptySubtext}>
               告诉我你今天做了什么，或者有什么计划
@@ -386,7 +457,7 @@ const ChatScreen = () => {
           value={inputText}
           onChangeText={setInputText}
           placeholder="输入你的想法、任务或问题..."
-          placeholderTextColor="#B3A397"
+          placeholderTextColor={c.muted}
           multiline
           maxLength={2000}
         />
@@ -395,9 +466,9 @@ const ChatScreen = () => {
           onPress={handleSend}
           disabled={isLoading || !inputText.trim()}>
           {isLoading ? (
-            <ActivityIndicator color="#fff" size="small" />
+            <ActivityIndicator color={c.onPrimary} size="small" />
           ) : (
-            <Icon name="send" size={24} color="#fff" />
+            <Icon name="send" size={24} color={c.onPrimary} />
           )}
         </TouchableOpacity>
       </View>
@@ -405,164 +476,182 @@ const ChatScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFF8F0',
-  },
-  header: {
-    backgroundColor: '#E8996C',
-    paddingHorizontal: 16,
-    paddingTop: 14,
-    paddingBottom: 12,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  headerSubtitle: {
-    fontSize: 13,
-    color: '#FFE9D9',
-    marginTop: 2,
-  },
-  reminderBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FDEFE2',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    gap: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F3D6BC',
-  },
-  reminderBarText: {
-    flex: 1,
-    fontSize: 13,
-    color: '#8C5A33',
-    lineHeight: 18,
-  },
-  messageList: {
-    padding: 16,
-    flexGrow: 1,
-  },
-  messageContainer: {
-    marginBottom: 16,
-    maxWidth: '80%',
-  },
-  userMessage: {
-    alignSelf: 'flex-end',
-    alignItems: 'flex-end',
-  },
-  aiMessage: {
-    alignSelf: 'flex-start',
-    alignItems: 'flex-start',
-  },
-  messageBubble: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 20,
-  },
-  userBubble: {
-    backgroundColor: '#E8996C',
-    borderBottomRightRadius: 4,
-  },
-  aiBubble: {
-    backgroundColor: '#fff',
-    borderBottomLeftRadius: 4,
-    shadowColor: '#C9A488',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.12,
-    shadowRadius: 6,
-    elevation: 2,
-  },
-  messageText: {
-    fontSize: 16,
-    color: '#4A3B33',
-    lineHeight: 22,
-  },
-  userMessageText: {
-    color: '#fff',
-  },
-  timestamp: {
-    fontSize: 11,
-    color: '#B3A397',
-    marginTop: 4,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 60,
-  },
-  emptyText: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#4A3B33',
-    marginTop: 16,
-  },
-  emptySubtext: {
-    fontSize: 14,
-    color: '#8C7A6E',
-    marginTop: 8,
-    textAlign: 'center',
-  },
-  quickActions: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingBottom: 8,
-    gap: 8,
-  },
-  quickActionButton: {
-    backgroundColor: '#FCEFE6',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#F3D6BC',
-  },
-  quickActionText: {
-    fontSize: 13,
-    color: '#E8996C',
-    fontWeight: '500',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    padding: 16,
-    backgroundColor: '#fff',
-    borderTopWidth: 1,
-    borderTopColor: '#F0E0D2',
-    alignItems: 'flex-end',
-  },
-  input: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#E5D5C4',
-    borderRadius: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    paddingRight: 48,
-    fontSize: 16,
-    maxHeight: 120,
-    color: '#4A3B33',
-    backgroundColor: '#FFFBF6',
-  },
-  sendButton: {
-    position: 'absolute',
-    right: 24,
-    bottom: 24,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#E8996C',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  sendButtonDisabled: {
-    backgroundColor: '#F3D6BC',
-  },
-});
+const createStyles = (c) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: c.background,
+    },
+    header: {
+      backgroundColor: c.headerBg,
+      paddingHorizontal: 16,
+      paddingTop: 14,
+      paddingBottom: 12,
+      borderBottomLeftRadius: 20,
+      borderBottomRightRadius: 20,
+    },
+    headerTitle: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: c.onPrimary,
+    },
+    headerSubtitle: {
+      fontSize: 13,
+      color: c.headerSubtitle,
+      marginTop: 2,
+    },
+    reminderBar: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: c.reminderBg,
+      paddingHorizontal: 16,
+      paddingVertical: 10,
+      gap: 8,
+      borderBottomWidth: 1,
+      borderBottomColor: c.softBorder,
+    },
+    reminderBarText: {
+      flex: 1,
+      fontSize: 13,
+      color: c.reminderText,
+      lineHeight: 18,
+    },
+    loadOlderButton: {
+      alignSelf: 'center',
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      borderRadius: 16,
+      backgroundColor: c.card,
+      borderWidth: 1,
+      borderColor: c.border,
+      marginBottom: 12,
+    },
+    loadOlderText: {
+      fontSize: 13,
+      color: c.primary,
+    },
+    messageList: {
+      padding: 16,
+      flexGrow: 1,
+    },
+    messageContainer: {
+      marginBottom: 16,
+      maxWidth: '80%',
+    },
+    userMessage: {
+      alignSelf: 'flex-end',
+      alignItems: 'flex-end',
+    },
+    aiMessage: {
+      alignSelf: 'flex-start',
+      alignItems: 'flex-start',
+    },
+    messageBubble: {
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderRadius: 20,
+    },
+    userBubble: {
+      backgroundColor: c.primary,
+      borderBottomRightRadius: 4,
+    },
+    aiBubble: {
+      backgroundColor: c.card,
+      borderBottomLeftRadius: 4,
+      shadowColor: c.shadow,
+      shadowOffset: {width: 0, height: 2},
+      shadowOpacity: 0.12,
+      shadowRadius: 6,
+      elevation: 2,
+    },
+    messageText: {
+      fontSize: 16,
+      color: c.text,
+      lineHeight: 22,
+    },
+    userMessageText: {
+      color: c.onPrimary,
+    },
+    timestamp: {
+      fontSize: 11,
+      color: c.muted,
+      marginTop: 4,
+    },
+    emptyContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingVertical: 60,
+    },
+    emptyText: {
+      fontSize: 20,
+      fontWeight: '600',
+      color: c.text,
+      marginTop: 16,
+    },
+    emptySubtext: {
+      fontSize: 14,
+      color: c.subtext,
+      marginTop: 8,
+      textAlign: 'center',
+    },
+    quickActions: {
+      flexDirection: 'row',
+      paddingHorizontal: 16,
+      paddingBottom: 8,
+      gap: 8,
+    },
+    quickActionButton: {
+      backgroundColor: c.soft,
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: c.softBorder,
+    },
+    quickActionText: {
+      fontSize: 13,
+      color: c.primary,
+      fontWeight: '500',
+    },
+    inputContainer: {
+      flexDirection: 'row',
+      padding: 16,
+      backgroundColor: c.card,
+      borderTopWidth: 1,
+      borderTopColor: c.border,
+      alignItems: 'flex-end',
+    },
+    input: {
+      flex: 1,
+      borderWidth: 1,
+      borderColor: c.borderStrong,
+      borderRadius: 24,
+      paddingHorizontal: 16,
+      paddingVertical: 10,
+      paddingRight: 48,
+      fontSize: 16,
+      maxHeight: 120,
+      color: c.text,
+      backgroundColor: c.inputBg,
+    },
+    sendButton: {
+      position: 'absolute',
+      right: 24,
+      bottom: 24,
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: c.primary,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    sendButtonDisabled: {
+      backgroundColor: c.border,
+    },
+  });
 
 export default ChatScreen;

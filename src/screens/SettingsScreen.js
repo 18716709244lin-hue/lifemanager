@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  Switch,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {
@@ -17,11 +18,19 @@ import {
   getAiProvider,
   saveAiModel,
   getAiModel,
+  getNotificationsEnabled,
   clearAllData,
 } from '../services/StorageService';
 import {getProviders, getAvailableModels} from '../services/AIService';
+import {setNotificationsEnabled} from '../services/NotificationService';
+import {THEMES} from '../theme/themes';
+import {useTheme} from '../theme/ThemeContext';
 
 const SettingsScreen = () => {
+  const {theme, themeKey, setThemeKey} = useTheme();
+  const c = theme.colors;
+  const styles = useMemo(() => createStyles(c), [c]);
+
   const [apiKey, setApiKey] = useState('');
   const [provider, setProvider] = useState('deepseek');
   const [model, setModel] = useState('');
@@ -29,6 +38,7 @@ const SettingsScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showApiKey, setShowApiKey] = useState(true);
   const [providers, setProviders] = useState([]);
+  const [notificationsOn, setNotificationsOn] = useState(false);
 
   useEffect(() => {
     loadSettings();
@@ -47,10 +57,12 @@ const SettingsScreen = () => {
     const savedApiKey = await getApiKey();
     const savedProvider = await getAiProvider();
     const savedModel = await getAiModel();
+    const savedNotifications = await getNotificationsEnabled();
 
     if (savedApiKey) setApiKey(savedApiKey);
     if (savedProvider) setProvider(savedProvider);
     if (savedModel) setModel(savedModel);
+    setNotificationsOn(savedNotifications);
   };
 
   const handleSave = async () => {
@@ -70,6 +82,22 @@ const SettingsScreen = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleNotificationsToggle = async (value) => {
+    if (value) {
+      const ok = await setNotificationsEnabled(true);
+      if (!ok) {
+        Alert.alert(
+          '无法开启通知',
+          '请在系统设置中允许本应用发送通知，然后重新打开此开关。',
+        );
+        return;
+      }
+    } else {
+      await setNotificationsEnabled(false);
+    }
+    setNotificationsOn(value);
   };
 
   const handleClearData = () => {
@@ -145,7 +173,7 @@ const SettingsScreen = () => {
             value={apiKey}
             onChangeText={setApiKey}
             placeholder="输入你的 API Key"
-            placeholderTextColor="#B3A397"
+            placeholderTextColor={c.muted}
             secureTextEntry={!showApiKey}
             autoCapitalize="none"
             autoCorrect={false}
@@ -156,7 +184,7 @@ const SettingsScreen = () => {
             <Icon
               name={showApiKey ? 'visibility' : 'visibility-off'}
               size={24}
-              color="#8C7A6E"
+              color={c.subtext}
             />
           </TouchableOpacity>
         </View>
@@ -188,16 +216,64 @@ const SettingsScreen = () => {
         </View>
       </View>
 
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>外观主题</Text>
+        <View style={styles.themeRow}>
+          {Object.values(THEMES).map((t) => (
+            <TouchableOpacity
+              key={t.key}
+              style={[
+                styles.themeCard,
+                {backgroundColor: t.colors.background},
+                themeKey === t.key && {borderColor: t.colors.primary},
+              ]}
+              onPress={() => setThemeKey(t.key)}>
+              <View
+                style={[
+                  styles.themeSwatch,
+                  {backgroundColor: t.colors.primary},
+                ]}>
+                <Icon name={t.icon} size={18} color={t.colors.onPrimary} />
+              </View>
+              <Text style={[styles.themeName, {color: t.colors.text}]}>
+                {t.name}
+              </Text>
+              {themeKey === t.key && (
+                <Icon name="check-circle" size={16} color={t.colors.primary} />
+              )}
+            </TouchableOpacity>
+          ))}
+        </View>
+        <Text style={styles.hintText}>切换后立即生效，无需重启</Text>
+      </View>
+
+      <View style={styles.section}>
+        <View style={styles.switchRow}>
+          <View style={styles.switchInfo}>
+            <Text style={styles.sectionTitle}>通知提醒</Text>
+            <Text style={styles.hintText}>
+              生日提前提醒、任务到期当天 9:00 提醒
+            </Text>
+          </View>
+          <Switch
+            value={notificationsOn}
+            onValueChange={handleNotificationsToggle}
+            trackColor={{false: c.border, true: c.primary}}
+            thumbColor={notificationsOn ? c.primary : c.card}
+          />
+        </View>
+      </View>
+
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={[styles.button, styles.testButton]}
           onPress={testConnection}
           disabled={isLoading}>
           {isLoading ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color={c.onPrimary} />
           ) : (
             <>
-              <Icon name="wifi-tethering" size={20} color="#fff" />
+              <Icon name="wifi-tethering" size={20} color={c.onPrimary} />
               <Text style={styles.buttonText}>测试连接</Text>
             </>
           )}
@@ -208,10 +284,10 @@ const SettingsScreen = () => {
           onPress={handleSave}
           disabled={isLoading}>
           {isLoading ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color={c.onPrimary} />
           ) : (
             <>
-              <Icon name="save" size={20} color="#fff" />
+              <Icon name="save" size={20} color={c.onPrimary} />
               <Text style={styles.buttonText}>保存设置</Text>
             </>
           )}
@@ -223,7 +299,7 @@ const SettingsScreen = () => {
         <TouchableOpacity
           style={[styles.button, styles.dangerButton]}
           onPress={handleClearData}>
-          <Icon name="delete-forever" size={20} color="#fff" />
+          <Icon name="delete-forever" size={20} color={c.onPrimary} />
           <Text style={styles.buttonText}>清除所有数据</Text>
         </TouchableOpacity>
       </View>
@@ -242,162 +318,198 @@ const SettingsScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFF8F0',
-    padding: 16,
-  },
-  section: {
-    marginBottom: 24,
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 16,
-    shadowColor: '#C9A488',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 2,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#4A3B33',
-    marginBottom: 12,
-  },
-  providerContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  providerButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#FAF1E7',
-    borderWidth: 1,
-    borderColor: '#F0E0D2',
-  },
-  providerButtonActive: {
-    backgroundColor: '#E8996C',
-    borderColor: '#E8996C',
-  },
-  providerButtonText: {
-    fontSize: 14,
-    color: '#7A6A5F',
-  },
-  providerButtonTextActive: {
-    color: '#fff',
-    fontWeight: '500',
-  },
-  apiKeyContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  apiKeyInput: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#EADACB',
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 14,
-    color: '#4A3B33',
-    backgroundColor: '#FFFBF6',
-  },
-  eyeButton: {
-    marginLeft: 8,
-    padding: 8,
-  },
-  hintText: {
-    fontSize: 12,
-    color: '#8C7A6E',
-    marginTop: 8,
-  },
-  modelContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  modelButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    backgroundColor: '#FAF1E7',
-    borderWidth: 1,
-    borderColor: '#F0E0D2',
-  },
-  modelButtonActive: {
-    backgroundColor: '#E8996C',
-    borderColor: '#E8996C',
-  },
-  modelButtonText: {
-    fontSize: 13,
-    color: '#7A6A5F',
-  },
-  modelButtonTextActive: {
-    color: '#fff',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 24,
-  },
-  button: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    borderRadius: 12,
-    gap: 8,
-  },
-  testButton: {
-    backgroundColor: '#C9774B',
-  },
-  saveButton: {
-    backgroundColor: '#E8996C',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  dangerSection: {
-    marginBottom: 24,
-    backgroundColor: '#FBEDE9',
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#F3C9C1',
-  },
-  dangerTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#C96A5B',
-    marginBottom: 12,
-  },
-  dangerButton: {
-    backgroundColor: '#C96A5B',
-  },
-  infoSection: {
-    backgroundColor: '#FCEFE6',
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#F3D6BC',
-  },
-  infoTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#A4653A',
-    marginBottom: 8,
-  },
-  infoText: {
-    fontSize: 13,
-    color: '#C9774B',
-    lineHeight: 20,
-  },
-});
+const createStyles = (c) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: c.background,
+      padding: 16,
+    },
+    section: {
+      marginBottom: 24,
+      backgroundColor: c.card,
+      borderRadius: 16,
+      padding: 16,
+      borderWidth: 1,
+      borderColor: c.border,
+      shadowColor: c.shadow,
+      shadowOffset: {width: 0, height: 2},
+      shadowOpacity: 0.1,
+      shadowRadius: 6,
+      elevation: 2,
+    },
+    sectionTitle: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: c.text,
+      marginBottom: 12,
+    },
+    providerContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+    },
+    providerButton: {
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      borderRadius: 20,
+      backgroundColor: c.surface,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    providerButtonActive: {
+      backgroundColor: c.primary,
+      borderColor: c.primary,
+    },
+    providerButtonText: {
+      fontSize: 14,
+      color: c.subtext,
+    },
+    providerButtonTextActive: {
+      color: c.onPrimary,
+      fontWeight: '500',
+    },
+    apiKeyContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    apiKeyInput: {
+      flex: 1,
+      borderWidth: 1,
+      borderColor: c.borderStrong,
+      borderRadius: 12,
+      paddingHorizontal: 12,
+      paddingVertical: 10,
+      fontSize: 14,
+      color: c.text,
+      backgroundColor: c.inputBg,
+    },
+    eyeButton: {
+      marginLeft: 8,
+      padding: 8,
+    },
+    hintText: {
+      fontSize: 12,
+      color: c.subtext,
+      marginTop: 8,
+    },
+    modelContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+    },
+    modelButton: {
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 16,
+      backgroundColor: c.surface,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    modelButtonActive: {
+      backgroundColor: c.primary,
+      borderColor: c.primary,
+    },
+    modelButtonText: {
+      fontSize: 13,
+      color: c.subtext,
+    },
+    modelButtonTextActive: {
+      color: c.onPrimary,
+    },
+    themeRow: {
+      flexDirection: 'row',
+      gap: 10,
+    },
+    themeCard: {
+      flex: 1,
+      borderRadius: 14,
+      borderWidth: 2,
+      borderColor: c.border,
+      paddingVertical: 14,
+      alignItems: 'center',
+      gap: 8,
+    },
+    themeSwatch: {
+      width: 34,
+      height: 34,
+      borderRadius: 17,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    themeName: {
+      fontSize: 13,
+      fontWeight: '600',
+    },
+    switchRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    switchInfo: {
+      flex: 1,
+      paddingRight: 12,
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      gap: 12,
+      marginBottom: 24,
+    },
+    button: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: 12,
+      borderRadius: 12,
+      gap: 8,
+    },
+    testButton: {
+      backgroundColor: c.primaryDark,
+    },
+    saveButton: {
+      backgroundColor: c.primary,
+    },
+    buttonText: {
+      color: c.onPrimary,
+      fontSize: 16,
+      fontWeight: '600',
+    },
+    dangerSection: {
+      marginBottom: 24,
+      backgroundColor: c.dangerSoft,
+      borderRadius: 16,
+      padding: 16,
+      borderWidth: 1,
+      borderColor: c.dangerBorder,
+    },
+    dangerTitle: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: c.danger,
+      marginBottom: 12,
+    },
+    dangerButton: {
+      backgroundColor: c.danger,
+    },
+    infoSection: {
+      backgroundColor: c.soft,
+      borderRadius: 16,
+      padding: 16,
+      borderWidth: 1,
+      borderColor: c.softBorder,
+    },
+    infoTitle: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: c.softText,
+      marginBottom: 8,
+    },
+    infoText: {
+      fontSize: 13,
+      color: c.softText2,
+      lineHeight: 20,
+    },
+  });
 
 export default SettingsScreen;

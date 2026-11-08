@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useMemo} from 'react';
 import {
   View,
   Text,
@@ -13,8 +13,13 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {saveApiKey, saveAiProvider, saveUserName, setOnboardingCompleted} from '../services/StorageService';
 import {getProviders} from '../services/AIService';
+import {useTheme} from '../theme/ThemeContext';
 
 const OnboardingScreen = ({navigation}) => {
+  const {theme} = useTheme();
+  const c = theme.colors;
+  const styles = useMemo(() => createStyles(c), [c]);
+
   const [step, setStep] = useState(1);
   const [userName, setUserName] = useState('');
   const [selectedProvider, setSelectedProvider] = useState('deepseek');
@@ -38,7 +43,7 @@ const OnboardingScreen = ({navigation}) => {
   const renderStep1 = () => (
     <View style={styles.stepContainer}>
       <View style={styles.iconContainer}>
-        <Icon name="waving-hand" size={64} color="#E8996C" />
+        <Icon name="waving-hand" size={64} color={c.primary} />
       </View>
       <Text style={styles.title}>欢迎使用 AI 生活管家</Text>
       <Text style={styles.subtitle}>
@@ -63,7 +68,7 @@ const OnboardingScreen = ({navigation}) => {
         value={userName}
         onChangeText={setUserName}
         placeholder="输入你的名字或昵称"
-        placeholderTextColor="#B3A397"
+        placeholderTextColor={c.muted}
       />
       <TouchableOpacity style={styles.button} onPress={() => setStep(3)}>
         <Text style={styles.buttonText}>下一步</Text>
@@ -105,7 +110,7 @@ const OnboardingScreen = ({navigation}) => {
         value={apiKey}
         onChangeText={setApiKey}
         placeholder="粘贴你的 API Key"
-        placeholderTextColor="#B3A397"
+        placeholderTextColor={c.muted}
         autoCapitalize="none"
         autoCorrect={false}
       />
@@ -137,10 +142,11 @@ const OnboardingScreen = ({navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (c) =>
+  StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF8F0',
+    backgroundColor: c.background,
   },
   stepContainer: {
     flex: 1,
@@ -154,13 +160,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#4A3B33',
+    color: c.text,
     textAlign: 'center',
     marginBottom: 16,
   },
   subtitle: {
     fontSize: 16,
-    color: '#7A6A5F',
+    color: c.subtext,
     textAlign: 'center',
     lineHeight: 24,
     marginBottom: 32,
@@ -168,31 +174,31 @@ const styles = StyleSheet.create({
   stepTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#4A3B33',
+    color: c.text,
     marginBottom: 8,
   },
   stepDescription: {
     fontSize: 14,
-    color: '#8C7A6E',
+    color: c.subtext,
     marginBottom: 24,
     lineHeight: 20,
   },
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#4A3B33',
+    color: c.text,
     marginBottom: 8,
     marginTop: 16,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#EADACB',
+    borderColor: c.borderStrong,
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 16,
-    color: '#4A3B33',
-    backgroundColor: '#FFFBF6',
+    color: c.text,
+    backgroundColor: c.inputBg,
     marginBottom: 24,
   },
   providerGrid: {
@@ -205,26 +211,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 16,
-    backgroundColor: '#fff',
+    backgroundColor: c.card,
     borderWidth: 2,
-    borderColor: '#F0E0D2',
+    borderColor: c.border,
     minWidth: '45%',
     alignItems: 'center',
   },
   providerCardActive: {
-    borderColor: '#E8996C',
-    backgroundColor: '#FCEFE6',
+    borderColor: c.primary,
+    backgroundColor: c.soft,
   },
   providerName: {
     fontSize: 15,
     fontWeight: '500',
-    color: '#7A6A5F',
+    color: c.subtext,
   },
   providerNameActive: {
-    color: '#E8996C',
+    color: c.primary,
   },
   helpBox: {
-    backgroundColor: '#FCEFE6',
+    backgroundColor: c.soft,
     borderRadius: 16,
     padding: 16,
     marginBottom: 24,
@@ -232,23 +238,23 @@ const styles = StyleSheet.create({
   helpTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#A4653A',
+    color: c.softText,
     marginBottom: 8,
   },
   helpText: {
     fontSize: 13,
-    color: '#C9774B',
+    color: c.softText2,
     lineHeight: 20,
   },
   button: {
-    backgroundColor: '#E8996C',
+    backgroundColor: c.primary,
     paddingVertical: 16,
     borderRadius: 16,
     alignItems: 'center',
     marginTop: 16,
   },
   buttonText: {
-    color: '#fff',
+    color: c.onPrimary,
     fontSize: 16,
     fontWeight: '600',
   },
