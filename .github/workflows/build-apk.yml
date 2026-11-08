@@ -53,10 +53,23 @@ jobs:
         run: |
           test -f android/app/debug.keystore || (echo "签名文件缺失：android/app/debug.keystore，否则每次构建签名会变化导致无法覆盖升级" && exit 1)
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: 8.0.1
+      - name: Install Gradle 8.0.1
+        run: |
+          set -e
+          # 先用国内镜像下载，失败再回退官方源；自动重试，避免 services.gradle.org 偶发 504
+          for url in \
+            "https://mirrors.cloud.tencent.com/gradle/gradle-8.0.1-bin.zip" \
+            "https://services.gradle.org/distributions/gradle-8.0.1-bin.zip"; do
+            echo "尝试下载: $url"
+            if curl -fL --retry 5 --retry-delay 5 --connect-timeout 20 --max-time 300 \
+                -o /tmp/gradle.zip "$url"; then
+              break
+            fi
+          done
+          test -s /tmp/gradle.zip || (echo "Gradle 下载失败" && exit 1)
+          unzip -q /tmp/gradle.zip -d "$HOME/gradle-dist"
+          echo "$HOME/gradle-dist/gradle-8.0.1/bin" >> "$GITHUB_PATH"
+          "$HOME/gradle-dist/gradle-8.0.1/bin/gradle" --version
 
       - name: Build Release APK
         working-directory: android
